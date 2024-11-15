@@ -9,7 +9,7 @@ export const routes: Routes = [
   { path: '', component: HomeComponent }, // Default route
   { path: 'profile', component: ProfileComponent },
   { path: 'order-track', component: OrderTrackComponent },
-  { path: 'order-plac', component: OrderPlaceComponent },
-  { path: 'order-place', component: PaymentComponent },
+  { path: 'order-place', component: OrderPlaceComponent },
+  { path: 'payment', component: PaymentComponent },
   { path: '**', redirectTo: '' },
 ];

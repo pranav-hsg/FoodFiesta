@@ -1,0 +1,14 @@
+/* Define the border animation for the circles */
+@keyframes circle-fill {
+    0% {
+        stroke-dasharray: 0, 100;
+    }
+
+    100% {
+        stroke-dasharray: 100, 0;
+    }
+}
+
+.animate-circle-fill {
+    animation: circle-fill 2s ease-in-out forwards;
+}

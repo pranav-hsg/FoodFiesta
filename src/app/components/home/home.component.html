@@ -9,75 +9,81 @@
       <!-- Cuisine Type Filter -->
       <div>
         <label for="cuisine" class="block text-sm font-medium text-gray-600">Cuisine</label>
-        <select id="cuisine" class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
-          <option value="">Select Cuisine</option>
-          <option value="indian">Indian</option>
-          <option value="italian">Italian</option>
-          <option value="chinese">Chinese</option>
-          <option value="mexican">Mexican</option>
+        <select
+          id="cuisine"
+          [(ngModel)]="selectedCuisine"
+          (change)="filterRestaurants()"
+          class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+        >
+          <option value="">All Cuisines</option>
+          <option value="Indian">Indian</option>
         </select>
       </div>
 
       <!-- Rating Filter -->
       <div>
         <label for="rating" class="block text-sm font-medium text-gray-600">Rating</label>
-        <select id="rating" class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
-          <option value="">Select Rating</option>
+        <select
+          id="rating"
+          [(ngModel)]="selectedRating"
+          (change)="filterRestaurants()"
+          class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+        >
+          <option value="">Any Rating</option>
+          <option value="5">5 Stars & Above</option>
           <option value="4">4 Stars & Above</option>
           <option value="3">3 Stars & Above</option>
-          <option value="2">2 Stars & Above</option>
-          <option value="1">1 Star & Above</option>
         </select>
       </div>
 
       <!-- Location Filter -->
       <div>
         <label for="location" class="block text-sm font-medium text-gray-600">Location</label>
-        <select id="location" class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
-          <option value="">Select Location</option>
-          <option value="new-york">New York</option>
-          <option value="los-angeles">Los Angeles</option>
-          <option value="chicago">Chicago</option>
-          <option value="san-francisco">San Francisco</option>
+        <select
+          id="location"
+          [(ngModel)]="selectedLocation"
+          (change)="filterRestaurants()"
+          class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+        >
+          <option value="">All Locations</option>
+          <option value="New Delhi">New Delhi</option>
+          <option value="Mumbai">Mumbai</option>
+          <option value="Bengaluru">Bengaluru</option>
+          <option value="Chandigarh">Chandigarh</option>
         </select>
-      </div>
-
-      <!-- Search Button -->
-      <div class="flex items-end justify-center">
-        <button class="mt-6 px-6 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none">Apply Filters</button>
       </div>
     </div>
   </div>
 
   <!-- Restaurant List Section -->
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-    <!-- Single Restaurant Card -->
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-      <img src="https://via.placeholder.com/500x300" alt="Restaurant Image" class="w-full h-48 object-cover" />
+    <!-- Loop over the restaurant list using *ngFor -->
+    <div
+      *ngFor="let restaurant of filteredRestaurants"
+      class="bg-white shadow-lg rounded-lg overflow-hidden"
+      (click)="placeOrder(restaurant)"
+      routerLinkActive="router-link-active"
+    >
+      <img [src]="restaurant.imageUrl" alt="Restaurant Image" class="w-full h-48 object-cover" />
       <div class="p-4">
-        <h3 class="text-2xl font-semibold text-gray-800">Spicy Indian Cuisine</h3>
-        <p class="text-gray-600">Indian</p>
-        <p class="text-gray-500">New York, USA</p>
+        <h3 class="text-2xl font-semibold text-gray-800">{{ restaurant.name }}</h3>
+        <p class="text-gray-600">{{ restaurant.cuisine }}</p>
+        <p class="text-gray-500">{{ restaurant.location }}</p>
         <div class="mt-4 flex items-center space-x-2">
-          <span class="text-yellow-500">★★★★☆</span>
-          <span class="text-gray-500">(125 reviews)</span>
+          <span class="text-yellow-500">
+            <ng-container *ngFor="let star of [].constructor(restaurant.rating); let i = index"> ★ </ng-container>
+            <ng-container *ngFor="let star of [].constructor(5 - restaurant.rating); let i = index"> ☆ </ng-container>
+          </span>
+          <span class="text-gray-500">({{ restaurant.reviews }} reviews)</span>
         </div>
 
         <!-- Menu Section -->
         <div class="mt-4">
           <h4 class="font-semibold text-gray-700">Menu</h4>
           <ul class="space-y-3 mt-2">
-            <li class="flex justify-between text-gray-800">
-              <span>Butter Chicken</span>
-              <span>$12.99</span>
-            </li>
-            <li class="flex justify-between text-gray-800">
-              <span>Palak Paneer</span>
-              <span>$10.99</span>
-            </li>
-            <li class="flex justify-between text-gray-800">
-              <span>Garlic Naan</span>
-              <span>$3.99</span>
+            <li *ngFor="let item of restaurant.menu" class="flex justify-between text-gray-800">
+              <span>{{ item.item }}</span>
+              <span>{{ item.price }}</span>
             </li>
           </ul>
         </div>
@@ -86,92 +92,9 @@
         <div class="mt-4">
           <h4 class="font-semibold text-gray-700">Customer Reviews</h4>
           <div class="mt-2">
-            <p class="text-gray-600">"Amazing food, great service!" - John D.</p>
-            <p class="text-gray-600">"Delicious and flavorful. Highly recommend!" - Sarah P.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Another Restaurant Card -->
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-      <img src="https://via.placeholder.com/500x300" alt="Restaurant Image" class="w-full h-48 object-cover" />
-      <div class="p-4">
-        <h3 class="text-2xl font-semibold text-gray-800">La Dolce Vita</h3>
-        <p class="text-gray-600">Italian</p>
-        <p class="text-gray-500">Los Angeles, USA</p>
-        <div class="mt-4 flex items-center space-x-2">
-          <span class="text-yellow-500">★★★★★</span>
-          <span class="text-gray-500">(200 reviews)</span>
-        </div>
-
-        <!-- Menu Section -->
-        <div class="mt-4">
-          <h4 class="font-semibold text-gray-700">Menu</h4>
-          <ul class="space-y-3 mt-2">
-            <li class="flex justify-between text-gray-800">
-              <span>Margherita Pizza</span>
-              <span>$14.99</span>
-            </li>
-            <li class="flex justify-between text-gray-800">
-              <span>Pasta Carbonara</span>
-              <span>$16.99</span>
-            </li>
-            <li class="flex justify-between text-gray-800">
-              <span>Tiramisu</span>
-              <span>$6.99</span>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Customer Reviews -->
-        <div class="mt-4">
-          <h4 class="font-semibold text-gray-700">Customer Reviews</h4>
-          <div class="mt-2">
-            <p class="text-gray-600">"Best pizza I've ever had!" - Emily R.</p>
-            <p class="text-gray-600">"The pasta was divine, will come back soon!" - Marco T.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Another Restaurant Card -->
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-      <img src="https://via.placeholder.com/500x300" alt="Restaurant Image" class="w-full h-48 object-cover" />
-      <div class="p-4">
-        <h3 class="text-2xl font-semibold text-gray-800">Sushi World</h3>
-        <p class="text-gray-600">Japanese</p>
-        <p class="text-gray-500">San Francisco, USA</p>
-        <div class="mt-4 flex items-center space-x-2">
-          <span class="text-yellow-500">★★★★☆</span>
-          <span class="text-gray-500">(80 reviews)</span>
-        </div>
-
-        <!-- Menu Section -->
-        <div class="mt-4">
-          <h4 class="font-semibold text-gray-700">Menu</h4>
-          <ul class="space-y-3 mt-2">
-            <li class="flex justify-between text-gray-800">
-              <span>Salmon Sushi</span>
-              <span>$9.99</span>
-            </li>
-            <li class="flex justify-between text-gray-800">
-              <span>Tuna Roll</span>
-              <span>$11.99</span>
-            </li>
-            <li class="flex justify-between text-gray-800">
-              <span>Seaweed Salad</span>
-              <span>$4.99</span>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Customer Reviews -->
-        <div class="mt-4">
-          <h4 class="font-semibold text-gray-700">Customer Reviews</h4>
-          <div class="mt-2">
-            <p class="text-gray-600">"Fresh and tasty sushi. Will visit again." - Alex W.</p>
-            <p class="text-gray-600">"A bit expensive, but definitely worth it!" - Karen L.</p>
+            <div *ngFor="let review of restaurant.customerReviews">
+              <p class="text-gray-600">{{ review }}</p>
+            </div>
           </div>
         </div>
       </div>

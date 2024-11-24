@@ -1,29 +1,31 @@
-<!-- Order Placement Section -->
 <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
-  <h2 class="text-2xl font-semibold text-gray-700 mb-4">Place Your Order</h2>
-  <form>
+  <h2 class="text-2xl font-semibold text-gray-700 mb-4">Place Your Order at {{ selectedRestaurant.name }}</h2>
+
+  <form (ngSubmit)="placeOrder()">
     <!-- Food Selection -->
     <div class="mb-4">
       <label for="foodItem" class="block text-sm font-medium text-gray-600">Select Food</label>
-      <select id="foodItem" name="foodItem" class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+      <select
+        [(ngModel)]="menuItem"
+        id="foodItem"
+        name="foodItem"
+        class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+      >
         <option value="">Choose a dish</option>
-        <option value="pizza">Pizza</option>
-        <option value="burger">Burger</option>
-        <option value="sushi">Sushi</option>
-        <option value="pasta">Pasta</option>
+        <!-- Dynamically populate food items -->
+        <option *ngFor="let item of selectedRestaurant.menu" [ngValue]="item">{{ item.item }} - {{ item.price }}</option>
       </select>
     </div>
 
     <!-- Customization Options (Toppings, Special Instructions) -->
-    <div class="mb-4">
-      <label for="toppings" class="block text-sm font-medium text-gray-600">Toppings (optional)</label>
-      <div class="mt-2">
-        <input type="checkbox" id="cheese" class="mr-2" /> Extra Cheese
-        <br />
-        <input type="checkbox" id="pepperoni" class="mr-2" /> Pepperoni
-        <br />
-        <input type="checkbox" id="mushrooms" class="mr-2" /> Mushrooms
-      </div>
+    <div *ngIf="menuItem.toppings && menuItem.toppings.length > 0">
+      <p class="mt-2 text-gray-700">Choose Toppings:</p>
+      <ul>
+        <li *ngFor="let topping of menuItem.toppings" class="flex items-center">
+          <input type="checkbox" id="topping-{{ topping.name }}" name="toppings" value="{{ topping.name }}" class="mr-2" />
+          <label for="topping-{{ topping.name }}" class="text-gray-600">{{ topping.name }} (+{{ topping.price }})</label>
+        </li>
+      </ul>
     </div>
 
     <div class="mb-4">
@@ -52,9 +54,40 @@
 
     <!-- Submit Order Button -->
     <div class="flex justify-center">
-      <button (click)="placeOrder()" type="submit" class="px-6 py-3 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none">
-        Proceed to payment
-      </button>
+      <button type="submit" class="px-6 py-3 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none">Proceed to payment</button>
     </div>
   </form>
+
+  <!-- Restaurant Details (Optional) -->
+
+  <div class="mt-8 max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <!-- Restaurant Information Section -->
+    <h3 class="text-2xl font-semibold text-gray-800">About {{ selectedRestaurant?.name }}</h3>
+    <p class="text-gray-600 mt-2">
+      Cuisine: <span class="text-gray-800 font-medium">{{ selectedRestaurant?.cuisine }}</span>
+    </p>
+    <p class="text-gray-600 mt-1">
+      Location: <span class="text-gray-800 font-medium">{{ selectedRestaurant.location }}</span>
+    </p>
+    <p class="text-gray-600 mt-1">
+      Rating:
+      <span class="text-yellow-500 font-medium"> {{ selectedRestaurant?.rating }} ★ </span>
+    </p>
+    <p class="text-gray-600 mt-1">
+      Reviews: <span class="text-gray-800 font-medium">{{ selectedRestaurant?.reviews }}</span> reviews
+    </p>
+
+    <!-- Customer Reviews Section -->
+    <div class="mt-6">
+      <h4 class="text-xl font-medium text-gray-800">Customer Reviews</h4>
+      <ul class="mt-4 space-y-4">
+        <li
+          *ngFor="let review of selectedRestaurant.customerReviews"
+          class="bg-gray-50 p-4 rounded-lg shadow-sm hover:bg-gray-100 transition-all duration-200"
+        >
+          <blockquote class="text-gray-700 italic">"{{ review }}"</blockquote>
+        </li>
+      </ul>
+    </div>
+  </div>
 </div>
